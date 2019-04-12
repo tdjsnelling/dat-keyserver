@@ -1,0 +1,26 @@
+{
+  "name": "dat-keyserver",
+  "version": "1.0.0",
+  "description": "a distributed PGP keyserver project based on the dat protocol",
+  "main": "index.js",
+  "repository": "https://github.com/tdjsnelling/dat-keyserver",
+  "author": "Tom Snelling",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "hyperdb": "^3.5.0",
+    "openpgp": "^4.4.10",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "nodemon": "^1.18.11",
+    "prettier": "^1.16.4"
+  }
+}

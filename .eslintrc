@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended"
+  ],
+
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "jsx-quotes": [2, "prefer-double"],
+    "object-curly-spacing": ["error", "always"]
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2018,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}
