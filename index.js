@@ -48,22 +48,22 @@ db.on('ready', () => {
   const swarm = hyperdiscovery(db)
   logger.info('database ready')
 
-  swarm.on('connection', (peer, type) => {
+  swarm.on('connection', () => {
     logger.info(`peer connected: ${swarm.connections.length} total`)
   })
 })
 
 // Express setup
 
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
-  res.sendStatus(200)
+  res.sendFile(path.resolve(__dirname, 'html/index.html'))
 })
 
 // HTTP route to publish a new public key
 
-app.post('/api/publish', (req, res) => {
+app.post('/publish', (req, res) => {
   if (req.body.key) {
     openpgp.key
       .readArmored(req.body.key)
@@ -77,7 +77,7 @@ app.post('/api/publish', (req, res) => {
         db.put(`/${entry.fingerprint}`, entry, err => {
           if (!err) {
             logger.info(`published key ${entry.fingerprint}`)
-            res.send(entry.fingerprint)
+            res.send(`Success! Published key <pre>${entry.fingerprint}</pre>`)
           } else {
             logger.error(`${err}`)
             res.sendStatus(500)
@@ -96,22 +96,26 @@ app.post('/api/publish', (req, res) => {
 
 // HTTP route to fetch a pubilc key
 
-app.get('/api/fetch/:fingerprint', (req, res) => {
-  db.get(`/${req.params.fingerprint}`, (err, nodes) => {
-    if (!err) {
-      if (nodes[0]) {
-        logger.info(`fetched key ${req.params.fingerprint}`)
-        res.send(nodes[0].value.key)
+app.get('/fetch', (req, res) => {
+  if (req.query.fingerprint) {
+    db.get(`/${req.query.fingerprint.toLowerCase()}`, (err, nodes) => {
+      if (!err) {
+        if (nodes[0]) {
+          logger.info(`fetched key ${req.query.fingerprint.toLowerCase()}`)
+          res.send(`<pre>${nodes[0].value.key}</pre>`)
+        } else {
+          res.sendStatus(404)
+        }
       } else {
-        res.sendStatus(404)
+        logger.error(`${err}`)
+        res.sendStatus(500)
       }
-    } else {
-      logger.error(`${err}`)
-      res.sendStatus(500)
-    }
-  })
+    })
+  } else {
+    res.sendStatus(400)
+  }
 })
 
 // Start the HTTP server
 
-app.listen(12844, () => logger.info('dat-keyserver started on port 12844'))
+app.listen(4000, () => logger.info('dat-keyserver started on port 4000'))
