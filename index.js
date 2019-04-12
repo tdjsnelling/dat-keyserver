@@ -42,7 +42,7 @@ if (process.env.NODE_ENV !== 'production') {
 const db = hyperdb(
   path.resolve(appDir, 'keys.db'),
   'e30f46002c0128ee5255ba79596b444112ea428046064f5e596bf26b5234ceff',
-  { valueEncoding: 'utf8' }
+  { valueEncoding: 'json' }
 )
 db.on('ready', () => {
   const swarm = hyperdiscovery(db)
@@ -74,7 +74,7 @@ app.post('/api/publish', (req, res) => {
         entry.created = result.keys[0].getCreationTime()
         entry.userIds = result.keys[0].getUserIds()
 
-        db.put(`/${entry.fingerprint}`, JSON.stringify(entry), err => {
+        db.put(`/${entry.fingerprint}`, entry, err => {
           if (!err) {
             logger.info(`published key ${entry.fingerprint}`)
             res.send(entry.fingerprint)
@@ -101,7 +101,7 @@ app.get('/api/fetch/:fingerprint', (req, res) => {
     if (!err) {
       if (nodes[0]) {
         logger.info(`fetched key ${req.params.fingerprint}`)
-        res.send(JSON.parse(nodes[0].value).key)
+        res.send(nodes[0].value.key)
       } else {
         res.sendStatus(404)
       }
