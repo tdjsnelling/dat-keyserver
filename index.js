@@ -5,6 +5,7 @@ const openpgp = require('openpgp')
 const winston = require('winston')
 const hyperdb = require('hyperdb')
 const hyperdiscovery = require('hyperdiscovery')
+const args = require('minimist')(process.argv.slice(2))
 
 const homeDir = require('os').homedir()
 const appDir = path.resolve(homeDir, '.datkeyserver')
@@ -45,11 +46,11 @@ const db = hyperdb(
   { valueEncoding: 'json' }
 )
 db.on('ready', () => {
-  const swarm = hyperdiscovery(db)
+  const swarm = hyperdiscovery(db, { download: true, upload: true })
   logger.info('database ready')
 
   swarm.on('connection', () => {
-    logger.info(`peer connected: ${swarm.connections.length} total`)
+    logger.info(`peer connected. ${swarm.connections.length} total`)
   })
 })
 
@@ -104,6 +105,7 @@ app.get('/fetch', (req, res) => {
           logger.info(`fetched key ${req.query.fingerprint.toLowerCase()}`)
           res.send(`<pre>${nodes[0].value.key}</pre>`)
         } else {
+          logger.info(`peer ${req.query.fingerprint.toLowerCase()} not found`)
           res.sendStatus(404)
         }
       } else {
@@ -118,4 +120,5 @@ app.get('/fetch', (req, res) => {
 
 // Start the HTTP server
 
-app.listen(4000, () => logger.info('dat-keyserver started on port 4000'))
+const port = args.p || 4000
+app.listen(port, () => logger.info(`dat-keyserver started on port ${port}`))
