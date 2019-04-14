@@ -49,8 +49,14 @@ db.on('ready', () => {
   const swarm = hyperdiscovery(db, { download: true, upload: true })
   logger.info('database ready')
 
-  swarm.on('connection', () => {
-    logger.info(`peer connected. ${swarm.connections.length} total`)
+  swarm.on('connection', (peer, type) => {
+    logger.info(
+      `a peer at ${type.host} connected. ${swarm.connections.length} total`
+    )
+
+    peer.on('close', () => {
+      logger.info(`a peer at ${type.host} disconnected`)
+    })
   })
 })
 
