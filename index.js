@@ -5,7 +5,6 @@ const openpgp = require('openpgp')
 const winston = require('winston')
 const hyperdb = require('hyperdb')
 const hyperdiscovery = require('hyperdiscovery')
-const pump = require('pump')
 const args = require('minimist')(process.argv.slice(2))
 
 const homeDir = require('os').homedir()
@@ -55,13 +54,6 @@ db.on('ready', () => {
     logger.info(
       `a peer at ${type.host} connected. ${swarm.connections.length} total`
     )
-
-    const stream = db.replicate()
-    pump(peer, stream, peer, err => {
-      if (err) {
-        logger.error(`pump: ${err}`)
-      }
-    })
 
     peer.on('close', () => {
       logger.info(`a peer at ${type.host} disconnected`)
