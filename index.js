@@ -48,7 +48,7 @@ const db = hyperdb(
 )
 
 db.on('ready', () => {
-  const swarm = hyperdiscovery(db)
+  const swarm = hyperdiscovery(db, { live: true })
   logger.info('database ready')
 
   swarm.on('connection', (peer, type) => {
@@ -57,11 +57,9 @@ db.on('ready', () => {
     )
 
     const stream = db.replicate()
-    pump(peer, stream, peer, (err, data) => {
+    pump(peer, stream, peer, err => {
       if (err) {
-        logger.error(`${err}`)
-      } else {
-        logger.info(`${data}`)
+        logger.error(`pump: ${err}`)
       }
     })
 
