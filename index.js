@@ -47,8 +47,10 @@ const db = hyperdb(
 )
 
 db.on('ready', () => {
-  const swarm = hyperdiscovery(db, { live: true })
+  const swarm = hyperdiscovery(db, { live: true, upload: true, download: true })
   logger.info('database ready')
+
+  db.put('/t', { t: new Date().getTime() })
 
   swarm.on('connection', (peer, type) => {
     logger.info(
@@ -112,7 +114,7 @@ app.get('/fetch', (req, res) => {
           logger.info(`fetched key ${req.query.fingerprint.toLowerCase()}`)
           res.send(`<pre>${nodes[0].value.key}</pre>`)
         } else {
-          logger.info(`peer ${req.query.fingerprint.toLowerCase()} not found`)
+          logger.info(`key ${req.query.fingerprint.toLowerCase()} not found`)
           res.sendStatus(404)
         }
       } else {
