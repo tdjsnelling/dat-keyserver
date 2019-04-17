@@ -40,15 +40,18 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Distrubuted db setup
 
-const db = hyperdb(
-  path.resolve(appDir, 'keys.db'),
-  'e30f46002c0128ee5255ba79596b444112ea428046064f5e596bf26b5234ceff',
-  { valueEncoding: 'json' }
-)
+let db
+if (args.k) {
+  db = hyperdb(path.resolve(appDir, 'keys.db'), args.k, {
+    valueEncoding: 'json'
+  })
+} else {
+  db = hyperdb(path.resolve(appDir, 'keys.db'), { valueEncoding: 'json' })
+}
 
 db.on('ready', () => {
-  const swarm = hyperdiscovery(db, { live: true, upload: true, download: true })
-  logger.info('database ready')
+  const swarm = hyperdiscovery(db)
+  logger.info(`database ${db.key.toString('hex')} ready`)
 
   db.put('/t', { t: new Date().getTime() })
 
