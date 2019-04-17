@@ -53,12 +53,30 @@ db.on('ready', () => {
   const swarm = hyperdiscovery(db)
   logger.info(`database ${db.key.toString('hex')} ready`)
 
+  if (!args.k) {
+    logger.info(`your pool key is ${db.key.toString('hex')}`)
+  }
+
   db.put('/t', { t: new Date().getTime() })
 
   swarm.on('connection', (peer, type) => {
     logger.info(
       `a peer at ${type.host} connected. ${swarm.connections.length} total`
     )
+
+    db.authorized(peer.key, (err, auth) => {
+      if (err) {
+        logger.error(`${err}`)
+      } else {
+        if (!auth) {
+          db.authorize(peer.key, err => {
+            if (!err) {
+              logger.info(`peer at ${type.host} was authorised`)
+            }
+          })
+        }
+      }
+    })
 
     peer.on('close', () => {
       logger.info(`a peer at ${type.host} disconnected`)
