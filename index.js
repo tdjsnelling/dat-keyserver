@@ -64,12 +64,12 @@ db.on('ready', () => {
       `a peer at ${type.host} connected. ${swarm.connections.length} total`
     )
 
-    db.authorized(peer.key, (err, auth) => {
+    db.authorized(peer.remoteUserData, (err, auth) => {
       if (err) {
         logger.error(`${err}`)
       } else {
         if (!auth) {
-          db.authorize(peer.key, err => {
+          db.authorize(peer.remoteUserData, err => {
             if (!err) {
               logger.info(`peer at ${type.host} was authorised`)
             }
