@@ -148,6 +148,70 @@ app.get('/fetch', (req, res) => {
   }
 })
 
+// HTTP route to search keys for a specific query
+
+const generateUserIdsList = userIds => {
+  let html = '<ul>'
+  for (let i in userIds) {
+    html += `<li>${userIds[i].replace('<', '&lt;').replace('>', '&gt;')}</li>`
+  }
+  return (html += '</ul>')
+}
+
+const generateSearchResultHtml = item => {
+  return `<li style="padding-bottom:30px;">
+      <p>pub <a href="/fetch?fingerprint=${
+        item.fingerprint
+      }">${item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')}</a></p>
+      <p>Created ${item.created.split('T')[0]}</p>
+      ${generateUserIdsList(item.userIds)}
+    </li>`
+}
+
+app.get('/search', (req, res) => {
+  if (req.query.query) {
+    let results = []
+    let htmlResults = []
+
+    db.list('/', (err, list) => {
+      if (!err) {
+        for (let i in list) {
+          const userIds = list[i][0].value.userIds
+
+          for (let j in userIds) {
+            if (
+              userIds[j].toLowerCase().includes(req.query.query.toLowerCase())
+            ) {
+              if (!results.includes(list[i][0].value)) {
+                results.push(list[i][0].value)
+              }
+            }
+          }
+        }
+
+        if (results.length) {
+          for (let i in results) {
+            htmlResults.push(generateSearchResultHtml(results[i]))
+          }
+          res.send(
+            `<h1>Search results for “${
+              req.query.query
+            }”</h1><ul style="padding:0;font-family:monospace;">${htmlResults.join(
+              ''
+            )}</ul>`
+          )
+        } else {
+          res.sendStatus(404)
+        }
+      } else {
+        logger.error(`${err}`)
+      }
+    })
+  } else {
+    res.sendStatus(400)
+  }
+})
+
 // Start the HTTP server
 
 const port = args.p || 4000
