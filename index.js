@@ -92,6 +92,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'html/index.html'))
 })
 
+// HTTP route to get pool key
+
+app.get('/key', (req, res) => {
+  res.send(db.key.toString('hex'))
+})
+
 // HTTP route to publish a new public key
 
 app.post('/publish', (req, res) => {
