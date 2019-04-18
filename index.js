@@ -190,6 +190,9 @@ app.get('/search', (req, res) => {
         }
 
         if (results.length) {
+          logger.info(
+            `search for ${req.query.query} returned ${results.length} results`
+          )
           for (let i in results) {
             htmlResults.push(generateSearchResultHtml(results[i]))
           }
