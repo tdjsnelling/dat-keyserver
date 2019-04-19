@@ -36,6 +36,10 @@ By default, `dat-keyserver` runs on port 4000. To change this, pass the `-p` opt
 npm start -p 8080
 ```
 
+## Nodes
+
+For a list of existing nodes, see [nodes.md](nodes.md). If you run a node and want to add it to the list, please submit a pull request.
+
 ## License
 
 MIT
