@@ -1,0 +1,22 @@
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title dat-keyserver
+    style
+      include style.css
+  body
+    h1
+      | dat-keyserver&nbsp;
+      span (#{version})
+    h2 Search results for “#{query}”
+    hr
+    ul.searchResults
+      each item in results
+        li
+          span pub&nbsp;
+            a(href=`/fetch?fingerprint=${item.fingerprint}`)= item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')
+          p Created #{item.created.split('T')[0]}
+          ul
+            each id in item.userIds
+              li= id
+

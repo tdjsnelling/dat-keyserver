@@ -6,6 +6,7 @@ const winston = require('winston')
 const hyperdb = require('hyperdb')
 const hyperdiscovery = require('hyperdiscovery')
 const args = require('minimist')(process.argv.slice(2))
+const pkg = require('./package.json')
 
 const homeDir = require('os').homedir()
 const appDir = path.resolve(homeDir, '.datkeyserver')
@@ -86,10 +87,12 @@ db.on('ready', () => {
 
 // Express setup
 
+app.set('view engine', 'pug')
+app.set('views', './html')
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'html/index.html'))
+  res.render('index', { version: pkg.version, key: db.key.toString('hex') })
 })
 
 // HTTP route to get pool key
@@ -156,28 +159,9 @@ app.get('/fetch', (req, res) => {
 
 // HTTP route to search keys for a specific query
 
-const generateUserIdsList = userIds => {
-  let html = '<ul>'
-  for (let i in userIds) {
-    html += `<li>${userIds[i].replace('<', '&lt;').replace('>', '&gt;')}</li>`
-  }
-  return (html += '</ul>')
-}
-
-const generateSearchResultHtml = item => {
-  return `<li style="padding-bottom:30px;">
-      <p>pub <a href="/fetch?fingerprint=${
-        item.fingerprint
-      }">${item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')}</a></p>
-      <p>Created ${item.created.split('T')[0]}</p>
-      ${generateUserIdsList(item.userIds)}
-    </li>`
-}
-
 app.get('/search', (req, res) => {
   if (req.query.query) {
     let results = []
-    let htmlResults = []
 
     db.list('/', (err, list) => {
       if (!err) {
@@ -199,16 +183,11 @@ app.get('/search', (req, res) => {
           logger.info(
             `search for ${req.query.query} returned ${results.length} results`
           )
-          for (let i in results) {
-            htmlResults.push(generateSearchResultHtml(results[i]))
-          }
-          res.send(
-            `<h1>Search results for “${
-              req.query.query
-            }”</h1><ul style="padding:0;font-family:monospace;">${htmlResults.join(
-              ''
-            )}</ul>`
-          )
+          res.render('search', {
+            version: pkg.version,
+            query: req.query.query,
+            results: results
+          })
         } else {
           res.sendStatus(404)
         }

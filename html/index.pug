@@ -1,0 +1,40 @@
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title dat-keyserver
+    style
+      include style.css
+  body
+    h1
+      | dat-keyserver&nbsp;
+      span (#{version})
+    em
+      | a distributed PGP keyserver project based on the&nbsp;
+      a(href='https://datproject.org', target='_blank', rel='nofollow norefferer') dat protocol
+    hr
+    form(action='/search')
+      h2 Search
+      p Search user IDs - name, comment, email
+      input(type='text', name='query', size='80', required='')
+      br
+      button Search
+    hr
+    form(action='/fetch')
+      h2 Fetch
+      p Fetch by fingerprint
+      input(type='text', name='fingerprint', size='80', required='')
+      br
+      button Fetch
+    hr
+    form(action='/publish', method='POST')
+      h2 Publish
+      p Enter ASCII-armored public key
+      textarea(name='key', cols='80', rows='30', required='')
+      br
+      button Submit
+    hr
+    p
+      a(href='https://github.com/tdjsnelling/dat-keyserver', target='_blank', rel='nofollow norefferer') Source
+      span &nbsp;&bull; #{key}
+
+

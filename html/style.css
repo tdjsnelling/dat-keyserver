@@ -1,0 +1,29 @@
+body {
+  font-family: 'Courier', monospace;
+  font-size: 14px;
+  margin: 16px;
+}
+h1 span {
+  color: #999;
+  font-size: 0.8em;
+}
+h2 {
+  font-size: 18px;
+}
+input,
+textarea {
+  margin-bottom: 1em;
+  max-width: 100%;
+}
+hr {
+  background: 0;
+  border: 0;
+  border-top: 1px solid #999;
+  margin: 16px 0;
+}
+ul.searchResults {
+  padding-left: 16px;
+}
+ul.searchResults > li {
+  margin-bottom: 32px;
+}

@@ -1,6 +1,6 @@
 {
   "name": "dat-keyserver",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "a distributed PGP keyserver project based on the dat protocol",
   "main": "index.js",
   "repository": "https://github.com/tdjsnelling/dat-keyserver",
@@ -16,6 +16,7 @@
     "hyperdiscovery": "^8.0.0",
     "minimist": "^1.2.0",
     "openpgp": "^4.4.10",
+    "pug": "^2.0.3",
     "winston": "^3.2.1"
   },
   "devDependencies": {
