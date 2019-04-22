@@ -23,7 +23,7 @@ If you want to keep `dat-keyserver` running in the background, then you can use 
 If you want to join an existing pool then pass the `-k` option:
 
 ```
-npm start -k [POOL_KEY]
+npm start -- -k [POOL_KEY]
 ```
 
 If you come across a pool you wish to join but don't know the key, then you can navigate to `/key` to find it. I currently have a public pool with key `9ceccb8abeaba2868fe22d14605790b0b84ac58aba3e48606a710f4d33c5a4f7`.
@@ -33,7 +33,7 @@ If you come across a pool you wish to join but don't know the key, then you can 
 By default, `dat-keyserver` runs on port 4000. To change this, pass the `-p` option:
 
 ```
-npm start -p 8080
+npm start -- -p 8080
 ```
 
 ## Nodes
