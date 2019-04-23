@@ -153,7 +153,7 @@ app.get('/fetch', (req, res) => {
       if (!err) {
         if (nodes[0]) {
           logger.info(`fetched key ${req.query.fingerprint.toLowerCase()}`)
-          res.send(`<pre>${nodes[0].value.key}</pre>`)
+          res.send(`<pre>\n${nodes[0].value.key}\n</pre>`)
         } else {
           logger.info(`key ${req.query.fingerprint.toLowerCase()} not found`)
           res.sendStatus(404)
