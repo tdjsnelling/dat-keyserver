@@ -13,9 +13,13 @@ html
     ul.searchResults
       each item in results
         li
-          span pub&nbsp;
+          span pub #{item.algorithm.bits}&nbsp;
             a(href=`/fetch?fingerprint=${item.fingerprint}`)= item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')
-          p Created #{item.created.split('T')[0]}
+          p
+            strong Created
+            |  #{item.created.split('T')[0]} :
+            strong  Expires
+            |  #{item.expiry ? item.expiry.split('T')[0] : 'never'}
           ul
             each id in item.userIds
               li= id

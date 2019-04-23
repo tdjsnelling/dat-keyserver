@@ -42,6 +42,8 @@ if (process.env.NODE_ENV !== 'production') {
 // Distrubuted db setup
 
 let db
+let swarm
+
 if (args.k) {
   db = hyperdb(path.resolve(appDir, 'keys.db'), args.k, {
     valueEncoding: 'json'
@@ -51,7 +53,7 @@ if (args.k) {
 }
 
 db.on('ready', () => {
-  const swarm = hyperdiscovery(db)
+  swarm = hyperdiscovery(db)
   logger.info(`database ${db.key.toString('hex')} ready`)
 
   if (!args.k) {
@@ -92,13 +94,17 @@ app.set('views', './html')
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
-  res.render('index', { version: pkg.version, key: db.key.toString('hex') })
+  res.render('index', {
+    version: pkg.version,
+    key: db.key.toString('hex'),
+    peers: swarm.connections.length
+  })
 })
 
 // HTTP route to get pool key
 
 app.get('/key', (req, res) => {
-  res.send(db.key.toString('hex'))
+  res.send(`<pre>${db.key.toString('hex')}</pre>`)
 })
 
 // HTTP route to publish a new public key
@@ -113,15 +119,20 @@ app.post('/publish', (req, res) => {
         entry.fingerprint = result.keys[0].getFingerprint()
         entry.created = result.keys[0].getCreationTime()
         entry.userIds = result.keys[0].getUserIds()
+        entry.algorithm = result.keys[0].getAlgorithmInfo()
 
-        db.put(`/${entry.fingerprint}`, entry, err => {
-          if (!err) {
-            logger.info(`published key ${entry.fingerprint}`)
-            res.send(`Success! Published key <pre>${entry.fingerprint}</pre>`)
-          } else {
-            logger.error(`${err}`)
-            res.sendStatus(500)
-          }
+        result.keys[0].getExpirationTime().then(expiry => {
+          entry.expiry = expiry
+
+          db.put(`/${entry.fingerprint}`, entry, err => {
+            if (!err) {
+              logger.info(`published key ${entry.fingerprint}`)
+              res.send(`Success! Published key <pre>${entry.fingerprint}</pre>`)
+            } else {
+              logger.error(`${err}`)
+              res.sendStatus(500)
+            }
+          })
         })
       })
       .catch(err => {
