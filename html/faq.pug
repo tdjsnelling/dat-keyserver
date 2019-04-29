@@ -1,0 +1,49 @@
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='icon' href='icon.png')
+    title FAQ / dat-keyserver
+    style
+      include style.css
+  body
+    h1
+      | dat-keyserver&nbsp;
+      span (#{version})
+    em
+      | a distributed PGP keyserver project based on the&nbsp;
+      a(href='https://datproject.org', target='_blank', rel='nofollow norefferer') dat protocol
+    hr
+    ul
+      li
+        strong What?
+        p dat-keyserver is a distributed PGP keyserver project based on the&nbsp;
+          a(href='https://datproject.org', target='_blank', rel='nofollow norefferer') dat protocol
+          | .
+      li
+        strong Updating keys
+        p To update your public key, just publish it again and any existing key with the same fingerprint will be overwritten.
+      li
+        strong Removing keys
+        p In order to comply with privacy regulations, a key can be removed as long as a user can prove that the key belongs to them. They can prove this by clearsigning a message with their private key, and then the server can verify this signed message against their public key. If the signed message cannnot be verified, then the public key does not belong to them. A signed message can be generated like so:
+        code echo "Hello, world" | gpg --clearsign
+        p
+          i NB: when removing a key, the content of the signed message is irrelevant.
+        p Despite this, it is preferable that a user generates a&nbsp;
+          a(href='http://www.pgp.net/pgpnet/pgp-faq/pgp-faq-key-revocation.html', target='_blank', rel='nofollow norefferer') revocation certificate
+          | &nbsp;and uploads that if their key is no longer in use, rather than just removing it. This will let other people know that the key exists but should not be used any more.
+
+      li
+        strong What are ‘pools’?
+        p A pool is made up of multiple nodes. Any key uploaded to a node will be shared to all other nodes within the pool that that node belongs to. Keys are not shared between pools.
+        p The ‘master’ pool, which is intended to be the largest public pool, has the key&nbsp;
+          em 9ceccb8abeaba2868fe22d14605790b0b84ac58aba3e48606a710f4d33c5a4f7
+          | . This is the pool that almost all nodes will want to join.
+        p However, if organisations / companies / other groups want to have their own (private) pools, then they can do this without having unwanted keys being shared between the nodes in their pool.
+      li
+        strong How is this software licensed?
+        p dat-keyserver is provided under the MIT license. View the source code on&nbsp;
+          a(href='https://github.com/tdjsnelling/dat-keyserver', target='_blank', rel='nofollow norefferer') GitHub
+          | .
+      li
+        strong I have found a bug / have a feature suggestion
+        p Please follow the link above to the GitHub repo and create an issue.

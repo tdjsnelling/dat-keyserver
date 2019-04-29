@@ -1,4 +1,5 @@
-const app = require('express')()
+const express = require('express')
+const app = express()
 const bodyParser = require('body-parser')
 const path = require('path')
 const openpgp = require('openpgp')
@@ -87,10 +88,16 @@ db.on('ready', () => {
   })
 })
 
+// Fingerprint formatting helper
+
+const formatFingerprint = fingerprint =>
+  fingerprint.replace(' ', '').toLowerCase()
+
 // Express setup
 
 app.set('view engine', 'pug')
 app.set('views', './html')
+app.use(express.static('html/static'))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
@@ -99,6 +106,10 @@ app.get('/', (req, res) => {
     key: db.key.toString('hex'),
     peers: swarm.connections.length
   })
+})
+
+app.get('/faq', (req, res) => {
+  res.render('faq', { version: pkg.version })
 })
 
 // HTTP route to get pool key
@@ -127,7 +138,7 @@ app.post('/publish', (req, res) => {
           db.put(`/${entry.fingerprint}`, entry, err => {
             if (!err) {
               logger.info(`published key ${entry.fingerprint}`)
-              res.send(`Success! Published key <pre>${entry.fingerprint}</pre>`)
+              res.send(`<pre>Success! Published key ${entry.fingerprint}</pre>`)
             } else {
               logger.error(`${err}`)
               res.sendStatus(500)
@@ -149,13 +160,15 @@ app.post('/publish', (req, res) => {
 
 app.get('/fetch', (req, res) => {
   if (req.query.fingerprint) {
-    db.get(`/${req.query.fingerprint.toLowerCase()}`, (err, nodes) => {
+    db.get(`/${formatFingerprint(req.query.fingerprint)}`, (err, nodes) => {
       if (!err) {
         if (nodes[0]) {
-          logger.info(`fetched key ${req.query.fingerprint.toLowerCase()}`)
+          logger.info(`fetched key ${formatFingerprint(req.query.fingerprint)}`)
           res.send(`<pre>\n${nodes[0].value.key}\n</pre>`)
         } else {
-          logger.info(`key ${req.query.fingerprint.toLowerCase()} not found`)
+          logger.info(
+            `key ${formatFingerprint(req.query.fingerprint)} not found`
+          )
           res.sendStatus(404)
         }
       } else {
@@ -204,6 +217,84 @@ app.get('/search', (req, res) => {
         }
       } else {
         logger.error(`${err}`)
+      }
+    })
+  } else {
+    res.sendStatus(400)
+  }
+})
+
+app.post('/remove', (req, res) => {
+  if (req.body.fingerprint && req.body.message) {
+    db.get(`/${formatFingerprint(req.body.fingerprint)}`, (err, nodes) => {
+      if (!err) {
+        if (nodes[0]) {
+          openpgp.cleartext
+            .readArmored(req.body.message)
+            .then(message => {
+              openpgp.key
+                .readArmored(nodes[0].value.key)
+                .then(key => {
+                  const options = {
+                    message: message,
+                    publicKeys: key.keys
+                  }
+
+                  openpgp.verify(options).then(verified => {
+                    const valid = verified.signatures[0].valid
+                    if (valid) {
+                      db.del(
+                        `/${formatFingerprint(req.body.fingerprint)}`,
+                        err => {
+                          if (!err) {
+                            logger.info(
+                              `key ${formatFingerprint(
+                                req.body.fingerprint
+                              )} was removed successfully`
+                            )
+                            res.send(
+                              `<pre>Key ${formatFingerprint(
+                                req.body.fingerprint
+                              )} was removed successfully`
+                            )
+                          } else {
+                            logger.error(
+                              `there was an error removing key ${formatFingerprint(
+                                req.body.fingerprint
+                              )}`
+                            )
+                            res.sendStatus(500)
+                          }
+                        }
+                      )
+                    } else {
+                      logger.error(
+                        `user was not authorised to remove key ${formatFingerprint(
+                          req.body.fingerprint
+                        )}`
+                      )
+                      res.sendStatus(401)
+                    }
+                  })
+                })
+                .catch(err => {
+                  logger.error(`${err}`)
+                  res.sendStatus(500)
+                })
+            })
+            .catch(err => {
+              logger.error(`${err}`)
+              res.sendStatus(500)
+            })
+        } else {
+          logger.info(
+            `key ${formatFingerprint(req.body.fingerprint)} not found`
+          )
+          res.sendStatus(404)
+        }
+      } else {
+        logger.error(`${err}`)
+        res.sendStatus(500)
       }
     })
   } else {

@@ -27,3 +27,8 @@ ul.searchResults {
 ul.searchResults > li {
   margin-bottom: 32px;
 }
+code {
+  background: #dfdfdf;
+  display: inline-block;
+  padding: 8px;
+}

@@ -1,6 +1,7 @@
 html
   head
     meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='icon' href='icon.png')
     title dat-keyserver
     style
       include style.css
@@ -33,8 +34,19 @@ html
       br
       button Submit
     hr
+    form(action='/remove' method='POST')
+      h2 Remove
+      p Key fingerprint
+      input(type='text', name='fingerprint', size='80', required='')
+      p Enter a message clearsigned with the key you wish to remove (message content is not important)
+      textarea(name='message', cols='80', rows='20', required='')
+      br
+      button Remove
+    hr
     p
       | Key #{key} / #{peers} peers /&nbsp;
+      a(href='/faq') FAQ
+      | &nbsp;/&nbsp;
       a(href='https://github.com/tdjsnelling/dat-keyserver', target='_blank', rel='nofollow norefferer') Source
 
 
