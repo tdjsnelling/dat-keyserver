@@ -17,24 +17,27 @@ html
           p
             strong pub
             |  #{item.algorithm.bits}/
-            a(href=`/fetch?fingerprint=${item.fingerprint}`)= item.fingerprint.slice(-8).toUpperCase()
-          p #{item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')}
-          p
-            span cr.
+            a(href=`/fetch?fingerprint=${item.fingerprint.slice(-16)}`)= item.fingerprint.slice(-8).toUpperCase()
+            span  cr.
             |  #{item.created.split('T')[0]}
             span  exp.
-            |  #{item.expiry ? item.expiry.split('T')[0] : 'never'}
+            |  #{item.expiry ? item.expiry.split('T')[0] : 'n/a'}
+          p #{item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')}
           ul
             each user in item.users
               li
                 strong uid
                 |  #{user.userId}
                 each sig in user.signatures
-                  p sig sig
+                  p sig #{sig.keyId.slice(-8).toUpperCase()}
                     span  cr.
                     |  #{sig.created.split('T')[0]}
                     span  exp.
-                    |  #{sig.expiry ? sig.expiry.split('T')[0] : 'never'}
+                    |  #{sig.expiry ? sig.expiry.split('T')[0] : 'n/a'}&nbsp;
+                    if sig.keyId.slice(-8) === item.fingerprint.slice(-8)
+                      | [selfsig]
+                    else
+                      a(href=`/search?query=${sig.keyId.slice(-16)}`)= sig.keyId.slice(-8).toUpperCase()
           ul
             each subkey in item.subkeys
               li
@@ -42,8 +45,8 @@ html
                   strong sub
                   |  #{subkey.algorithm.bits}/#{subkey.fingerprint.slice(-8).toUpperCase()} cr. #{subkey.created.split('T')[0]}
                   each sig in subkey.signatures
-                    p sig sbind
+                    p sig #{sig.keyId.slice(-8).toUpperCase()}
                       span  cr.
                       |  #{sig.created.split('T')[0]}
                       span  exp.
-                      |  #{sig.expiry ? sig.expiry.split('T')[0] : 'never'}
+                      |  #{sig.expiry ? sig.expiry.split('T')[0] : 'n/a'}
