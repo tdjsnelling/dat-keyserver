@@ -131,6 +131,30 @@ app.post('/publish', (req, res) => {
         entry.created = result.keys[0].getCreationTime()
         entry.userIds = result.keys[0].getUserIds()
         entry.algorithm = result.keys[0].getAlgorithmInfo()
+        entry.users = []
+
+        result.keys[0].users.map(user => {
+          const userObj = {
+            userId: user.userId.userid,
+            signatures: []
+          }
+
+          user.selfCertifications.map(selfCert => {
+            userObj.signatures.push({
+              created: selfCert.created,
+              expiry: selfCert.signatureExpirationTime
+            })
+          })
+
+          user.otherCertifications.map(otherCert => {
+            userObj.signatures.push({
+              created: otherCert.created,
+              expiry: otherCert.signatureExpirationTime
+            })
+          })
+
+          entry.users.push(userObj)
+        })
 
         result.keys[0].getExpirationTime().then(expiry => {
           entry.expiry = expiry

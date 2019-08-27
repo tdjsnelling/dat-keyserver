@@ -17,11 +17,19 @@ html
           span pub #{item.algorithm.bits}&nbsp;
             a(href=`/fetch?fingerprint=${item.fingerprint}`)= item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')
           p
-            strong Created
-            |  #{item.created.split('T')[0]} :
-            strong  Expires
+            span cr.
+            |  #{item.created.split('T')[0]}
+            span  exp.
             |  #{item.expiry ? item.expiry.split('T')[0] : 'never'}
           ul
-            each id in item.userIds
-              li= id
+            each user in item.users
+              li
+                strong uid
+                |  #{user.userId}
+                each sig in user.signatures
+                  p sig
+                    span  cr.
+                    |  #{sig.created.split('T')[0]}
+                    span  exp.
+                    |  #{sig.expiry ? sig.expiry.split('T')[0] : 'never'}
 
