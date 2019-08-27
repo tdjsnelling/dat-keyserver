@@ -14,8 +14,11 @@ html
     ul.searchResults
       each item in results
         li
-          span pub #{item.algorithm.bits}&nbsp;
-            a(href=`/fetch?fingerprint=${item.fingerprint}`)= item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')
+          p
+            strong pub
+            |  #{item.algorithm.bits}/
+            a(href=`/fetch?fingerprint=${item.fingerprint}`)= item.fingerprint.slice(-8).toUpperCase()
+          p #{item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')}
           p
             span cr.
             |  #{item.created.split('T')[0]}
@@ -27,9 +30,20 @@ html
                 strong uid
                 |  #{user.userId}
                 each sig in user.signatures
-                  p sig
+                  p sig sig
                     span  cr.
                     |  #{sig.created.split('T')[0]}
                     span  exp.
                     |  #{sig.expiry ? sig.expiry.split('T')[0] : 'never'}
-
+          ul
+            each subkey in item.subkeys
+              li
+                p
+                  strong sub
+                  |  #{subkey.algorithm.bits}/#{subkey.fingerprint.slice(-8).toUpperCase()} cr. #{subkey.created.split('T')[0]}
+                  each sig in subkey.signatures
+                    p sig sbind
+                      span  cr.
+                      |  #{sig.created.split('T')[0]}
+                      span  exp.
+                      |  #{sig.expiry ? sig.expiry.split('T')[0] : 'never'}

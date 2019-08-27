@@ -132,6 +132,7 @@ app.post('/publish', (req, res) => {
         entry.userIds = result.keys[0].getUserIds()
         entry.algorithm = result.keys[0].getAlgorithmInfo()
         entry.users = []
+        entry.subkeys = []
 
         result.keys[0].users.map(user => {
           const userObj = {
@@ -154,6 +155,25 @@ app.post('/publish', (req, res) => {
           })
 
           entry.users.push(userObj)
+        })
+
+        result.keys[0].getSubkeys().map(subkey => {
+          console.log(subkey)
+          const subkeyObj = {
+            created: subkey.getCreationTime(),
+            algorithm: subkey.getAlgorithmInfo(),
+            fingerprint: subkey.getFingerprint(),
+            signatures: []
+          }
+
+          subkey.bindingSignatures.map(sbind => {
+            subkeyObj.signatures.push({
+              created: sbind.created,
+              expiry: sbind.signatureExpirationTime
+            })
+          })
+
+          entry.subkeys.push(subkeyObj)
         })
 
         result.keys[0].getExpirationTime().then(expiry => {
