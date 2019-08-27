@@ -36,6 +36,10 @@ By default, `dat-keyserver` runs on port 4000. To change this, pass the `-p` opt
 npm start -- -p 8080
 ```
 
+#### Discovery
+
+In order for your node to be able to discover others, you must have at least one of the [discovery ports](https://github.com/datproject/hyperdiscovery/blob/238c0ae274222fa1fbc536c965dac8af03fcdac3/index.js#L13) open and useable on your machine. At the time of writing, these are `3282`, `3000`, `3002`, `3004`, `2001`, `2003` & `2005`.
+
 ## Nodes
 
 For a list of existing nodes, see [nodes.md](nodes.md). If you run a node and want to add it to the list, please submit a pull request.
