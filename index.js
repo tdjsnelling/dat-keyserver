@@ -131,11 +131,57 @@ app.post('/publish', (req, res) => {
         entry.created = result.keys[0].getCreationTime()
         entry.userIds = result.keys[0].getUserIds()
         entry.algorithm = result.keys[0].getAlgorithmInfo()
+        entry.users = []
+        entry.subkeys = []
+
+        result.keys[0].users.map(user => {
+          const userObj = {
+            userId: user.userId ? user.userId.userid : '[contents omitted]',
+            signatures: []
+          }
+
+          user.selfCertifications.map(selfCert => {
+            userObj.signatures.push({
+              keyId: selfCert.issuerKeyId.toHex(),
+              created: selfCert.created,
+              expiry: selfCert.signatureExpirationTime
+            })
+          })
+
+          user.otherCertifications.map(otherCert => {
+            userObj.signatures.push({
+              keyId: otherCert.issuerKeyId.toHex(),
+              created: otherCert.created,
+              expiry: otherCert.signatureExpirationTime
+            })
+          })
+
+          entry.users.push(userObj)
+        })
+
+        result.keys[0].getSubkeys().map(subkey => {
+          const subkeyObj = {
+            created: subkey.getCreationTime(),
+            algorithm: subkey.getAlgorithmInfo(),
+            fingerprint: subkey.getFingerprint(),
+            signatures: []
+          }
+
+          subkey.bindingSignatures.map(sbind => {
+            subkeyObj.signatures.push({
+              keyId: sbind.issuerKeyId.toHex(),
+              created: sbind.created,
+              expiry: sbind.signatureExpirationTime
+            })
+          })
+
+          entry.subkeys.push(subkeyObj)
+        })
 
         result.keys[0].getExpirationTime().then(expiry => {
           entry.expiry = expiry
 
-          db.put(`/${entry.fingerprint}`, entry, err => {
+          db.put(`/${entry.fingerprint.slice(-16)}`, entry, err => {
             if (!err) {
               logger.info(`published key ${entry.fingerprint}`)
               res.send(`<pre>Success! Published key ${entry.fingerprint}</pre>`)
@@ -160,22 +206,27 @@ app.post('/publish', (req, res) => {
 
 app.get('/fetch', (req, res) => {
   if (req.query.fingerprint) {
-    db.get(`/${formatFingerprint(req.query.fingerprint)}`, (err, nodes) => {
-      if (!err) {
-        if (nodes[0]) {
-          logger.info(`fetched key ${formatFingerprint(req.query.fingerprint)}`)
-          res.send(`<pre>\n${nodes[0].value.key}\n</pre>`)
+    db.get(
+      `/${formatFingerprint(req.query.fingerprint).slice(-16)}`,
+      (err, nodes) => {
+        if (!err) {
+          if (nodes[0]) {
+            logger.info(
+              `fetched key ${formatFingerprint(req.query.fingerprint)}`
+            )
+            res.send(`<pre>\n${nodes[0].value.key}\n</pre>`)
+          } else {
+            logger.info(
+              `key ${formatFingerprint(req.query.fingerprint)} not found`
+            )
+            res.sendStatus(404)
+          }
         } else {
-          logger.info(
-            `key ${formatFingerprint(req.query.fingerprint)} not found`
-          )
-          res.sendStatus(404)
+          logger.error(`${err}`)
+          res.sendStatus(500)
         }
-      } else {
-        logger.error(`${err}`)
-        res.sendStatus(500)
       }
-    })
+    )
   } else {
     res.sendStatus(400)
   }
@@ -199,6 +250,16 @@ app.get('/search', (req, res) => {
               if (!results.includes(list[i][0].value)) {
                 results.push(list[i][0].value)
               }
+            }
+          }
+
+          if (list[i][0].value.fingerprint) {
+            if (
+              list[i][0].value.fingerprint
+                .toLowerCase()
+                .includes(formatFingerprint(req.query.query))
+            ) {
+              results.push(list[i][0].value)
             }
           }
         }

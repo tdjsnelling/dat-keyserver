@@ -27,6 +27,12 @@ ul.searchResults {
 ul.searchResults > li {
   margin-bottom: 32px;
 }
+ul.searchResults p {
+  margin: 0.5em 0;
+}
+span.uid {
+  color: coral;
+}
 code {
   background: #dfdfdf;
   display: inline-block;
