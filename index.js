@@ -257,7 +257,7 @@ app.get('/search', (req, res) => {
             if (
               list[i][0].value.fingerprint
                 .toLowerCase()
-                .includes(req.query.query.toLowerCase())
+                .includes(formatFingerprint(req.query.query))
             ) {
               results.push(list[i][0].value)
             }
