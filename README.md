@@ -1,6 +1,18 @@
 # dat-keyserver
 
-a distributed PGP keyserver project based on the dat protocol
+A distributed PGP keyserver project based on the dat protocol.
+
+#### Introduction
+
+This project provides an OpenPGP keyserver that is fast, easy to set up, and fully decentralized. A key submitted to any server will be propagated to all other servers within the same pool, meaning each server stores the full set of submitted keys at all times. If a server fails or is otherwise no longer running, the keys submitted to that server are not lost and will still be available at all other servers in the pool.
+
+#### Pools
+
+A pool is a group of servers that share their set of data. A server operator has the choice to join an exisiting pool or create a new one. There is a 'master pool' which most servers should join, but should a company/organisation/other group of individuals want to run their own pool with a specific set of keys, then they can do so without other unwanted keys ending up on their servers.
+
+#### Removing keys
+
+`dat-keyserver` provides an important feature that `sks-keyserver` does not - the ability to remove keys. If a user can prove that a key belongs to them (by signing a message with their private key) then they are able to remove their public key with no interaction needed from the server operator. Once a key is removed, it is removed from all servers in the pool.
 
 ## Installation
 
