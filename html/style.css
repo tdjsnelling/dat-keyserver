@@ -30,6 +30,9 @@ ul.searchResults > li {
 ul.searchResults p {
   margin: 0.5em 0;
 }
+span.uid {
+  color: coral;
+}
 code {
   background: #dfdfdf;
   display: inline-block;

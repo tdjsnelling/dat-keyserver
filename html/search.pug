@@ -26,8 +26,9 @@ html
           ul
             each user in item.users
               li
-                strong uid
-                |  #{user.userId}
+                p
+                  strong uid&nbsp;
+                  span.uid #{user.userId}
                 each sig in user.signatures
                   p sig #{sig.keyId.slice(-8).toUpperCase()}
                     span  cr.
@@ -37,7 +38,7 @@ html
                     if sig.keyId.slice(-8) === item.fingerprint.slice(-8)
                       | [selfsig]
                     else
-                      a(href=`/search?query=${sig.keyId.slice(-16)}`)= sig.keyId.slice(-8).toUpperCase()
+                      a(href=`/search?query=${sig.keyId.slice(-16)}`)= sig.keyId.slice(-16).toUpperCase()
           ul
             each subkey in item.subkeys
               li
