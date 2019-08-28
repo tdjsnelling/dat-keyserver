@@ -1,3 +1,14 @@
+/*
+  search.js
+
+  GET route to return a list of keys based on a search query
+
+  We have to fetch _all_ entries from the hyperdb and filter them by our search
+  query. First we try and match our query to user ID strings, which include
+  name, comment and email address. We also filter by key fingerprint, and only
+  include matches if they are not already in our list of results.
+*/
+
 const db = require('../database')
 const logger = require('../helpers/logger')
 const formatFingerprint = require('../helpers/formatFingerprint')

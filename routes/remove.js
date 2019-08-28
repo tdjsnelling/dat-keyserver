@@ -1,3 +1,15 @@
+/*
+  remove.js
+
+  POST route to remove a key given a fingerprint and a signed message as
+  conformation
+
+  First, we fetch the public key of the given fingerprint. Then we use it to
+  verify if the signed message came from the owner of the paired private key.
+  If so, then we delete the key from the hyperdb. If not, we send an
+  Unauthorized response.
+*/
+
 const openpgp = require('openpgp')
 const db = require('../database')
 const logger = require('../helpers/logger')

@@ -1,3 +1,12 @@
+/*
+  database.js
+
+  Hyperdb storage and authorization logic. If a pool key was supplied, then
+  initiate our hyperdb using that key. If not, then initiate using our local
+  key. When a peer connects, check if the peer is authorized and if not then
+  authorize them so any changed will propogate.
+*/
+
 const hyperdb = require('hyperdb')
 const hyperdiscovery = require('hyperdiscovery')
 const path = require('path')

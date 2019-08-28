@@ -1,3 +1,11 @@
+/*
+  logger.js
+
+  Helper for global logging. Logs errors to error.log, all output to
+  combined.log, and if we aren't in a production environment log everything to
+  the console as well.
+*/
+
 const winston = require('winston')
 
 const logger = winston.createLogger({

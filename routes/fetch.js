@@ -1,3 +1,12 @@
+/*
+  fetch.js
+
+  GET route to return then public key of given fingerprint
+
+  Lookup a fingerprint in our hyperdb and return the associated public key. If
+  not then return a Not Found response.
+*/
+
 const db = require('../database')
 const logger = require('../helpers/logger')
 const formatFingerprint = require('../helpers/formatFingerprint')

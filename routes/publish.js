@@ -1,7 +1,3 @@
-const openpgp = require('openpgp')
-const db = require('../database')
-const logger = require('../helpers/logger')
-
 /*
   publish.js
 
@@ -10,6 +6,10 @@ const logger = require('../helpers/logger')
   Here we recieve the public key, parse out all of the useful information,
   and store it in the hyperdb.
 */
+
+const openpgp = require('openpgp')
+const db = require('../database')
+const logger = require('../helpers/logger')
 
 const publish = async (req, res) => {
   if (req.body.key) {
