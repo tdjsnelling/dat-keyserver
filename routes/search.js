@@ -34,18 +34,14 @@ const search = (req, res) => {
           }
         }
 
-        if (results.length) {
-          logger.info(
-            `search for ${req.query.query} returned ${results.length} results`
-          )
-          res.render('search', {
-            version: pkg.version,
-            query: req.query.query,
-            results: results
-          })
-        } else {
-          res.sendStatus(404)
-        }
+        logger.info(
+          `search for ${req.query.query} returned ${results.length} results`
+        )
+        res.render('search', {
+          version: pkg.version,
+          query: req.query.query,
+          results: results
+        })
       } else {
         logger.error(`${err}`)
       }
