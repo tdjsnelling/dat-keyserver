@@ -16,7 +16,8 @@ const db = require('./database')
 const publish = require('./routes/publish')
 const fetch = require('./routes/fetch')
 const search = require('./routes/search')
-const remove = require('./routes/remove')
+const requestRemove = require('./routes/requestRemove')
+const verifyRemove = require('./routes/verifyRemove')
 
 // Express setup
 app.set('view engine', 'pug')
@@ -51,8 +52,11 @@ app.get('/fetch', fetch)
 // HTTP route to search keys for a specific query
 app.get('/search', search)
 
-// HTTP route to remove a key
-app.post('/remove', remove)
+// HTTP route to request removal of a key
+app.post('/remove/request', requestRemove)
+
+// HTTP route to verify the removal of a key
+app.post('/remove/verify', verifyRemove)
 
 // Start the HTTP server
 const port = args.p || 4000

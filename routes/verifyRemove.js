@@ -1,5 +1,5 @@
 /*
-  remove.js
+  verifyRemove.js
 
   POST route to remove a key given a fingerprint and a signed message as
   conformation
@@ -11,6 +11,7 @@
 */
 
 const openpgp = require('openpgp')
+const crypto = require('crypto')
 const db = require('../database')
 const logger = require('../helpers/logger')
 const formatFingerprint = require('../helpers/formatFingerprint')
@@ -27,14 +28,28 @@ const remove = (req, res) => {
             )
             const key = await openpgp.key.readArmored(nodes[0].value.key)
 
+            const correctMessageContent = message.text.startsWith(
+              'I am requesting the removal of my public key from dat-keyserver. token='
+            )
+
+            const submittedToken = message.text.slice(-64)
+            const actualToken = crypto
+              .createHash('sha256')
+              .update(nodes[0].value.key)
+              .digest('hex')
+
             const options = {
               message: message,
               publicKeys: key.keys
             }
             const verified = await openpgp.verify(options)
-            const valid = verified.signatures[0].valid
+            const signatureValid = verified.signatures[0].valid
 
-            if (valid) {
+            if (
+              correctMessageContent &&
+              submittedToken === actualToken &&
+              signatureValid
+            ) {
               db.del(
                 `/${formatFingerprint(req.body.fingerprint).slice(-16)}`,
                 err => {

@@ -1,0 +1,24 @@
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='icon' href='icon.png')
+    title Remove key / dat-keyserver
+    style
+      include style.css
+  body
+    h1
+      a(href='/') dat-keyserver
+      span &nbsp;(#{version})
+    em
+      | a distributed PGP keyserver project based on the&nbsp;
+      a(href='https://datproject.org', target='_blank', rel='nofollow norefferer') dat protocol
+    hr
+    h2 Remove a key
+    p Clearsign the following message:
+    code #{message}
+    p and enter the output below.
+    form(action='/remove/verify' method='POST')
+      input(name='fingerprint', size='80', value=fingerprint, required='' style='display:none')
+      textarea(name='message', cols='80', rows='30', required='')
+      br
+      button Submit

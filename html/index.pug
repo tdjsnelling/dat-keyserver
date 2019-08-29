@@ -34,12 +34,10 @@ html
       br
       button Submit
     hr
-    form(action='/remove' method='POST')
+    form(action='/remove/request' method='POST')
       h2 Remove
       p Key fingerprint
       input(type='text', name='fingerprint', size='80', required='')
-      p Enter a message clearsigned with the key you wish to remove (message content is not important)
-      textarea(name='message', cols='80', rows='20', required='')
       br
       button Remove
     hr
