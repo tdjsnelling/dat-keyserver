@@ -16,7 +16,7 @@ const logger = require('./helpers/logger')
 const homeDir = require('os').homedir()
 const appDir = path.resolve(homeDir, '.datkeyserver')
 
-let db
+let db, swarm
 
 if (args.k) {
   db = hyperdb(path.resolve(appDir, 'keys.db'), args.k, {
@@ -27,7 +27,7 @@ if (args.k) {
 }
 
 db.on('ready', () => {
-  const swarm = hyperdiscovery(db)
+  swarm = hyperdiscovery(db)
   logger.info(`database ${db.key.toString('hex')} ready`)
 
   if (!args.k) {
@@ -61,4 +61,6 @@ db.on('ready', () => {
   })
 })
 
-module.exports = db
+const getSwarm = () => swarm
+
+module.exports = { db, getSwarm }

@@ -11,7 +11,7 @@ const bodyParser = require('body-parser')
 const args = require('minimist')(process.argv.slice(2))
 const pkg = require('./package.json')
 const logger = require('./helpers/logger')
-const db = require('./database')
+const { db, getSwarm } = require('./database')
 
 const publish = require('./routes/publish')
 const fetch = require('./routes/fetch')
@@ -29,7 +29,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.get('/', (req, res) => {
   res.render('index', {
     version: pkg.version,
-    key: db.key.toString('hex')
+    key: db.key.toString('hex'),
+    peers: getSwarm().connections.length
   })
 })
 

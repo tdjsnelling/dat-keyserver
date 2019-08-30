@@ -12,7 +12,7 @@
 
 const openpgp = require('openpgp')
 const crypto = require('crypto')
-const db = require('../database')
+const { db } = require('../database')
 const logger = require('../helpers/logger')
 const formatFingerprint = require('../helpers/formatFingerprint')
 

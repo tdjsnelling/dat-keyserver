@@ -8,7 +8,7 @@
 */
 
 const openpgp = require('openpgp')
-const db = require('../database')
+const { db } = require('../database')
 const logger = require('../helpers/logger')
 
 const publish = async (req, res) => {

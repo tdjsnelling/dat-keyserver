@@ -7,7 +7,7 @@
   not then return a Not Found response.
 */
 
-const db = require('../database')
+const { db } = require('../database')
 const logger = require('../helpers/logger')
 const formatFingerprint = require('../helpers/formatFingerprint')
 

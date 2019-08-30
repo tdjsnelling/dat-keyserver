@@ -10,7 +10,7 @@
 */
 
 const crypto = require('crypto')
-const db = require('../database')
+const { db } = require('../database')
 const pkg = require('../package.json')
 
 const requestRemove = (req, res) => {

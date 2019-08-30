@@ -9,7 +9,7 @@
   include matches if they are not already in our list of results.
 */
 
-const db = require('../database')
+const { db } = require('../database')
 const logger = require('../helpers/logger')
 const formatFingerprint = require('../helpers/formatFingerprint')
 const pkg = require('../package.json')
