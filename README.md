@@ -1,3 +1,5 @@
+![logotype](https://raw.githubusercontent.com/tdjsnelling/dat-keyserver/master/html/static/logotype.png)
+
 # dat-keyserver
 
 A distributed PGP keyserver project based on the dat protocol.
