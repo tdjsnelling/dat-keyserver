@@ -59,6 +59,8 @@ app.post('/remove/request', requestRemove)
 // HTTP route to verify the removal of a key
 app.post('/remove/verify', verifyRemove)
 
-// Start the HTTP server
-const port = args.p || 4000
-app.listen(port, () => logger.info(`dat-keyserver started on port ${port}`))
+if (!args.s) {
+  // Start the HTTP server
+  const port = args.p || 4000
+  app.listen(port, () => logger.info(`dat-keyserver started on port ${port}`))
+}

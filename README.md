@@ -4,7 +4,19 @@
 
 A distributed PGP keyserver project based on the dat protocol.
 
-#### Introduction
+- [Introduction](#introduction)
+  - [Pools](#pools)
+  - [Removing keys](#removing-keys)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Pools](#pools-1)
+  - [Port](#port)
+  - [Discovery](#discovery)
+  - [Seeding](#seeding)
+- [Nodes](#nodes)
+- [License](#license)
+
+## Introduction
 
 This project provides an OpenPGP keyserver that is fast, easy to set up, and fully decentralized. A key submitted to any server will be propagated to all other servers within the same pool, meaning each server stores the full set of submitted keys at all times. If a server fails or is otherwise no longer running, the keys submitted to that server are not lost and will still be available at all other servers in the pool.
 
@@ -18,9 +30,7 @@ A pool is a group of servers that share their set of data. A server operator has
 
 ## Installation
 
-Make sure you have `node` and `npm` installed, and that they are fairly up-to-date.
-
-Clone this repo, `cd` into `dat-keyserver` and `npm install` to install dependencies.
+Clone this repo and `npm install` to install dependencies (`yarn` is fine too).
 
 ## Usage
 
@@ -53,6 +63,10 @@ npm start -- -p 8080
 #### Discovery
 
 In order for your node to be able to discover others, you must have at least one of the [discovery ports](https://github.com/datproject/hyperdiscovery/blob/238c0ae274222fa1fbc536c965dac8af03fcdac3/index.js#L13) open and useable on your machine. At the time of writing, these are `3282`, `3000`, `3002`, `3004`, `2001`, `2003` & `2005`.
+
+#### Seeding
+
+If you would just like to run a 'seed' node, pass the `-s` option when you start the server. Your node will still hold and replicate data, and thus aid the network, but will not expose a web interface.
 
 ## Nodes
 
