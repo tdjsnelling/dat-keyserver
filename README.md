@@ -13,6 +13,7 @@ A distributed PGP keyserver project based on the dat protocol.
   - [Port](#port)
   - [Discovery](#discovery)
   - [Seeding](#seeding)
+  - [Database location](#database-location)
 - [Nodes](#nodes)
 - [License](#license)
 
@@ -67,6 +68,16 @@ In order for your node to be able to discover others, you must have at least one
 #### Seeding
 
 If you would just like to run a 'seed' node, pass the `-s` option when you start the server. Your node will still hold and replicate data, and thus aid the network, but will not expose a web interface.
+
+#### Database location
+
+By default, `dat-keyserver` will create it's database in `~/.datkeyserver/`. If you want to change the location of the database, pass the `-d` option. For example:
+
+```
+npm start -- -d my-custom-pool/
+```
+
+Use this if you want to your node to join a new pool, but don't want to lose data from a previous pool (data from different pools cannot be stored within the same directory). The directory will be created if it does not exist.
 
 ## Nodes
 

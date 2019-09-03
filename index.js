@@ -19,6 +19,22 @@ const search = require('./routes/search')
 const requestRemove = require('./routes/requestRemove')
 const verifyRemove = require('./routes/verifyRemove')
 
+if (args.h) {
+  // eslint-disable-next-line
+  console.log(
+    `dat-keyserver: a distributed PGP keyserver project based on the dat protocol
+
+Options:
+  -k <key>  : the key of the pool you want to join
+  -p <port> : the port to run the HTTP server on (4000)
+  -s        : run in seeding mode (false)
+  -d <path> : path to the folder in which you want to store the database (~/.datkeyserver)
+
+See README.md for more information.`
+  )
+  process.exit(0)
+}
+
 // Express setup
 app.set('view engine', 'pug')
 app.set('views', './html')
