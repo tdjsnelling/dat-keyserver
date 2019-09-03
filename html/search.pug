@@ -22,7 +22,7 @@ html
               span  (cr.
               |  #{item.created.split('T')[0]}
               span , exp.
-              |  #{item.expiry ? item.expiry.split('T')[0] : 'n/a'}) #{item.fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ')}
+              |  #{item.expiry ? item.expiry.split('T')[0] : 'n/a'}) #{item.fingerprint.toUpperCase()}
             ul
               each user in item.users
                 li

@@ -80,3 +80,5 @@ if (!args.s) {
   const port = args.p || 4000
   app.listen(port, () => logger.info(`dat-keyserver started on port ${port}`))
 }
+
+module.exports = app

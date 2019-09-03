@@ -15,6 +15,11 @@ const publish = async (req, res) => {
   if (req.body.key) {
     const result = await openpgp.key.readArmored(req.body.key)
 
+    if (result.err) {
+      res.sendStatus(500)
+      return
+    }
+
     let entry = {}
     entry.key = req.body.key
     entry.fingerprint = result.keys[0].getFingerprint()

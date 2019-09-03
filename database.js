@@ -14,7 +14,11 @@ const args = require('minimist')(process.argv.slice(2))
 const logger = require('./helpers/logger')
 
 const homeDir = require('os').homedir()
-const appDir = args.d ? args.d : path.resolve(homeDir, '.datkeyserver')
+let appDir = args.d ? args.d : path.resolve(homeDir, '.datkeyserver')
+
+if (process.env.NODE_ENV === 'test') {
+  appDir = 'testdb'
+}
 
 let db, swarm
 

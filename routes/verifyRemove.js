@@ -23,9 +23,14 @@ const remove = (req, res) => {
       async (err, nodes) => {
         if (!err) {
           if (nodes[0]) {
-            const message = await openpgp.cleartext.readArmored(
-              req.body.message
-            )
+            let message
+            try {
+              message = await openpgp.cleartext.readArmored(req.body.message)
+            } catch (e) {
+              res.sendStatus(500)
+              return
+            }
+
             const key = await openpgp.key.readArmored(nodes[0].value.key)
 
             const correctMessageContent = message.text.startsWith(
