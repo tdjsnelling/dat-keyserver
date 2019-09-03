@@ -2,6 +2,8 @@
 
 # dat-keyserver
 
+[![CircleCI](https://circleci.com/gh/tdjsnelling/dat-keyserver.svg?style=svg)](https://circleci.com/gh/tdjsnelling/dat-keyserver)
+
 A distributed PGP keyserver project based on the dat protocol.
 
 - [Introduction](#introduction)
