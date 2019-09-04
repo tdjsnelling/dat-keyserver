@@ -117,10 +117,30 @@ describe('dat-keyserver', () => {
   })
 
   describe('GET /', () => {
-    it('should expose a HTTP interface', done => {
+    it('should render the index page', done => {
       chai
         .request(server)
         .get('/')
+        .end((err, res) => {
+          res.should.have.status(200)
+          done()
+        })
+    })
+
+    it('should render the FAQ page', done => {
+      chai
+        .request(server)
+        .get('/faq')
+        .end((err, res) => {
+          res.should.have.status(200)
+          done()
+        })
+    })
+
+    it('should render the key page', done => {
+      chai
+        .request(server)
+        .get('/key')
         .end((err, res) => {
           res.should.have.status(200)
           done()
@@ -155,6 +175,17 @@ describe('dat-keyserver', () => {
           done()
         })
     })
+
+    it('should return 400 if no key is provided', done => {
+      chai
+        .request(server)
+        .post('/publish')
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .end((err, res) => {
+          res.should.have.status(400)
+          done()
+        })
+    })
   })
 
   describe('GET /fetch', () => {
@@ -180,12 +211,22 @@ describe('dat-keyserver', () => {
         })
     })
 
-    it('should 404 if no key was found', done => {
+    it('should return 404 if no key is found', done => {
       chai
         .request(server)
         .get('/fetch?fingerprint=1234567890abcdef')
         .end((err, res) => {
           res.should.have.status(404)
+          done()
+        })
+    })
+
+    it('should return 400 if no fingerprint is provided', done => {
+      chai
+        .request(server)
+        .get('/fetch')
+        .end((err, res) => {
+          res.should.have.status(400)
           done()
         })
     })
@@ -228,6 +269,16 @@ describe('dat-keyserver', () => {
           done()
         })
     })
+
+    it('should return 400 if no query is provided', done => {
+      chai
+        .request(server)
+        .get('/search')
+        .end((err, res) => {
+          res.should.have.status(400)
+          done()
+        })
+    })
   })
 
   describe('POST /remove/request', () => {
@@ -250,7 +301,7 @@ describe('dat-keyserver', () => {
         })
     })
 
-    it('should 404 if no key was found', done => {
+    it('should return 404 if no key is found', done => {
       chai
         .request(server)
         .post('/remove/request')
@@ -261,10 +312,21 @@ describe('dat-keyserver', () => {
           done()
         })
     })
+
+    it('should return 400 if no fingerprint is provided', done => {
+      chai
+        .request(server)
+        .post('/remove/request')
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .end((err, res) => {
+          res.should.have.status(400)
+          done()
+        })
+    })
   })
 
   describe('POST /remove/verify', () => {
-    it('should 500 if signed message is malformed', done => {
+    it('should return 500 if signed message is malformed', done => {
       chai
         .request(server)
         .post('/remove/verify')
@@ -279,7 +341,7 @@ describe('dat-keyserver', () => {
         })
     })
 
-    it('should 401 if signed message is invalid', done => {
+    it('should return 401 if signed message is invalid', done => {
       chai
         .request(server)
         .post('/remove/verify')
@@ -294,7 +356,7 @@ describe('dat-keyserver', () => {
         })
     })
 
-    it('should 401 if signed message is valid but token is incorrect', done => {
+    it('should returm 401 if signed message is valid but token incorrect', done => {
       chai
         .request(server)
         .post('/remove/verify')
@@ -309,7 +371,7 @@ describe('dat-keyserver', () => {
         })
     })
 
-    it('should remove a key if provided with valid message', done => {
+    it('should remove a key if provided with valid message and token', done => {
       chai
         .request(server)
         .post('/remove/verify')
@@ -326,6 +388,7 @@ describe('dat-keyserver', () => {
   })
 
   after(() => {
+    // delete the test database and exit cleanly after tests are complete
     setTimeout(() => {
       rimraf.sync('testdb')
       process.exit(0)
