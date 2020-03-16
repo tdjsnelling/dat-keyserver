@@ -15,7 +15,7 @@
     "express": "^4.16.4",
     "hyperdb": "^3.5.0",
     "hyperdiscovery": "^8.0.0",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "openpgp": "^4.4.10",
     "pug": "^2.0.3",
     "winston": "^3.2.1"
