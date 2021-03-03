@@ -17,7 +17,7 @@
     "hyperdiscovery": "^8.0.0",
     "minimist": "^1.2.0",
     "openpgp": "^4.4.10",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "winston": "^3.2.1"
   },
   "devDependencies": {
